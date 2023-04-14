@@ -74,7 +74,7 @@ local function IsGithubRepository(urlOrUsername, repositoryName)
 			return urlOrUsername, repositoryName
 		end
 		
-		return url:match(RepositoryPattern) or ("https://github.com/"..url):match(url)
+		return urlOrUsername:match(RepositoryPattern) or ("https://github.com/"..urlOrUsername):match(RepositoryPattern)
 	end
 	
 	return false
