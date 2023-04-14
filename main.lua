@@ -39,34 +39,34 @@ local function RunFunctionWithEnvironment(Function, Path)
 end
 
 import = function(pathOrStringOrFunction, branch)
-    local Function = loadstring(pathOrStringOrFunction)
-    
-    if Function then
-        return RunFunctionWithEnvironment(Function)
+	if type(pathOrStringOrFunction) == 'function' then
+		return RunFunctionWithEnvironment(pathOrStringOrFunction)
 	else
-		if type(pathOrStringOrFunction) == 'function' then
-			return RunFunctionWithEnvironment(pathOrStringOrFunction)
-		else
-			if not CurrentRepository then return end
-
-			local Url = ("https://raw.githubusercontent.com/%s/%s/%s/%s"):format(unpack(CurrentRepository), branch or "main", pathOrStringOrFunction)
-			local Success, Source = pcall(function()
-				return game:HttpGet(Url)
-			end)
-
-			if not Success then
-				return error("Unknown github path.")
-			end
-
-			local Function, CompileError = loadstring(Source)
-
-			if Function then
-				return RunFunctionWithEnvironment(Function, pathOrStringOrFunction)
-			else
-				return error(CompileError)
-			end
-		end
-	end
+        local Function = loadstring(pathOrStringOrFunction)
+        
+        if Function then
+            return RunFunctionWithEnvironment(Function)
+        else
+            if not CurrentRepository then return end
+            
+            local Url = ("https://raw.githubusercontent.com/%s/%s/%s/%s"):format(unpack(CurrentRepository), branch or "main", pathOrStringOrFunction)
+            local Success, Source = pcall(function()
+                return game:HttpGet(Url)
+            end)
+            
+            if not Success then
+                return error("Unknown github path.")
+            end
+            
+            local Function, CompileError = loadstring(Source)
+            
+            if Function then
+                return RunFunctionWithEnvironment(Function, pathOrStringOrFunction)
+            else
+                return error(CompileError)
+            end
+        end
+    end
 end
 
 local function IsGithubRepository(urlOrUsername, repositoryName)
